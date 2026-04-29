@@ -37,7 +37,7 @@
   "entity": {
     "binary_sensor": {
       "rainsensor": {
-        "name": "Rainsensor"
+        "name": "Rain sensor"
       }
     },
     "number": {
@@ -47,7 +47,7 @@
     },
     "sensor": {
       "raindelay": {
-        "name": "Raindelay"
+        "name": "Rain delay"
       }
     }
   },

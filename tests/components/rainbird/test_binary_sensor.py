@@ -47,12 +47,18 @@ async def test_rainsensor(
 ) -> None:
     """Test rainsensor binary sensor."""
 
-    rainsensor = hass.states.get("binary_sensor.rain_bird_controller_rainsensor")
+    rainsensor = hass.states.get("binary_sensor.rain_bird_controller_rain_sensor")
     assert rainsensor is not None
     assert rainsensor.state == expected_state
     assert rainsensor.attributes == {
-        "friendly_name": "Rain Bird Controller Rainsensor",
+        "friendly_name": "Rain Bird Controller Rain sensor",
     }
+
+    entity_entry = entity_registry.async_get(
+        "binary_sensor.rain_bird_controller_rain_sensor"
+    )
+    assert entity_entry
+    assert entity_entry.unique_id == "4c:a1:61:00:11:22-rainsensor"
 
 
 @pytest.mark.parametrize(
@@ -75,13 +81,14 @@ async def test_no_unique_id(
     await hass.config_entries.async_setup(config_entry.entry_id)
     assert config_entry.state is ConfigEntryState.LOADED
 
-    rainsensor = hass.states.get("binary_sensor.rain_bird_controller_rainsensor")
+    rainsensor = hass.states.get("binary_sensor.rain_bird_controller_rain_sensor")
     assert rainsensor is not None
     assert (
-        rainsensor.attributes.get("friendly_name") == "Rain Bird Controller Rainsensor"
+        rainsensor.attributes.get("friendly_name")
+        == "Rain Bird Controller Rain sensor"
     )
 
     entity_entry = entity_registry.async_get(
-        "binary_sensor.rain_bird_controller_rainsensor"
+        "binary_sensor.rain_bird_controller_rain_sensor"
     )
     assert not entity_entry

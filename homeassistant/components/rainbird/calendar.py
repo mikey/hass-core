@@ -77,7 +77,7 @@ class RainBirdCalendarEntity(
         if not program_event:
             return None
         return CalendarEvent(
-            summary=program_event.program_id.name,
+            summary=program_event.program_id.name.replace("PGM ", "Program "),
             start=dt_util.as_local(program_event.start),
             end=dt_util.as_local(program_event.end),
             rrule=program_event.rrule_str,
@@ -98,7 +98,7 @@ class RainBirdCalendarEntity(
         )
         return [
             CalendarEvent(
-                summary=program_event.program_id.name,
+                summary=program_event.program_id.name.replace("PGM ", "Program "),
                 start=dt_util.as_local(program_event.start),
                 end=dt_util.as_local(program_event.end),
                 rrule=program_event.rrule_str,

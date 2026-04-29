@@ -48,8 +48,9 @@ class RainBirdSensor(CoordinatorEntity[RainbirdUpdateCoordinator], BinarySensorE
         if coordinator.unique_id is not None:
             self._attr_unique_id = f"{coordinator.unique_id}-{description.key}"
             self._attr_device_info = coordinator.device_info
+            self._attr_name = "Rain sensor"
         else:
-            self._attr_name = f"{coordinator.device_name} Rainsensor"
+            self._attr_name = f"{coordinator.device_name} Rain sensor"
 
     @property
     def is_on(self) -> bool | None:

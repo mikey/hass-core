@@ -46,14 +46,14 @@ async def test_sensors(
 ) -> None:
     """Test sensor platform."""
 
-    raindelay = hass.states.get("sensor.rain_bird_controller_raindelay")
+    raindelay = hass.states.get("sensor.rain_bird_controller_rain_delay")
     assert raindelay is not None
     assert raindelay.state == expected_state
     assert raindelay.attributes == {
-        "friendly_name": "Rain Bird Controller Raindelay",
+        "friendly_name": "Rain Bird Controller Rain delay",
     }
 
-    entity_entry = entity_registry.async_get("sensor.rain_bird_controller_raindelay")
+    entity_entry = entity_registry.async_get("sensor.rain_bird_controller_rain_delay")
     assert entity_entry
     assert entity_entry.unique_id == "4c:a1:61:00:11:22-raindelay"
 
@@ -87,9 +87,9 @@ async def test_sensor_no_unique_id(
     await hass.config_entries.async_setup(config_entry.entry_id)
     assert config_entry.state is ConfigEntryState.LOADED
 
-    raindelay = hass.states.get("sensor.rain_bird_controller_raindelay")
+    raindelay = hass.states.get("sensor.rain_bird_controller_rain_delay")
     assert raindelay is not None
-    assert raindelay.attributes.get("friendly_name") == "Rain Bird Controller Raindelay"
+    assert raindelay.attributes.get("friendly_name") == "Rain Bird Controller Rain delay"
 
-    entity_entry = entity_registry.async_get("sensor.rain_bird_controller_raindelay")
+    entity_entry = entity_registry.async_get("sensor.rain_bird_controller_rain_delay")
     assert (entity_entry is None) == (config_entry_unique_id is None)
