@@ -53,6 +53,15 @@ RAIN_DELAY = "B60010"  # 0x10 is 16
 RAIN_DELAY_OFF = "B60000"
 # ACK command 0x10, Echo 0x06
 ACK_ECHO = "0106"
+# Combined controller state command 0x4C, response CC.
+# Format: CC HH MM SS DD M YYY DDDD SS II SSSS RRRR AA
+# (time, delaySetting, sensorState, irrigationState, seasonalAdjust, remainingRuntime, activeStation)
+# seasonal_adjust=100%, remaining_runtime=120s, active_station=3
+COMBINED_CONTROLLER_STATE_RESPONSE = "CC140B230817E7000000010064007803"
+# seasonal_adjust=0xFFFF means unsupported
+COMBINED_CONTROLLER_STATE_UNSUPPORTED = "CC140B230817E700030001FFFF000000"
+# Water budget response 0xB0: programCode(1B) + seasonalAdjust(2B), adjust=100%
+WATER_BUDGET_RESPONSE = "B0000064"
 WIFI_PARAMS_RESPONSE = {
     "macAddress": MAC_ADDRESS,
     "localIpAddress": "1.1.1.38",

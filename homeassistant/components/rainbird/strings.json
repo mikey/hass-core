@@ -48,6 +48,15 @@
     "sensor": {
       "raindelay": {
         "name": "Rain delay"
+      },
+      "seasonal_adjust": {
+        "name": "Seasonal adjustment"
+      },
+      "remaining_runtime": {
+        "name": "Remaining runtime"
+      },
+      "active_station": {
+        "name": "Active station"
       }
     }
   },

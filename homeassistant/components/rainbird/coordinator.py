@@ -11,7 +11,7 @@ from pyrainbird.async_client import (
     RainbirdApiException,
     RainbirdDeviceBusyException,
 )
-from pyrainbird.data import ModelAndVersion, Schedule
+from pyrainbird.data import ControllerState, ModelAndVersion, Schedule, WaterBudget
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.debounce import Debouncer
@@ -44,6 +44,8 @@ class RainbirdDeviceState:
     active_zones: set[int]
     rain: bool
     rain_delay: int
+    controller_state: ControllerState | None = None
+    water_budgets: dict[int, WaterBudget] | None = None
 
 
 def async_create_clientsession() -> aiohttp.ClientSession:
@@ -109,6 +111,18 @@ class RainbirdUpdateCoordinator(DataUpdateCoordinator[RainbirdDeviceState]):
             sw_version=f"{self._model_info.major}.{self._model_info.minor}",
         )
 
+    def program_device_info(self, program_num: int) -> DeviceInfo | None:
+        """Return device info for a program sub-device."""
+        if self._unique_id is None:
+            return None
+        letter = chr(ord("A") + program_num)
+        return DeviceInfo(
+            name=f"Rain Bird Program {letter}",
+            identifiers={(DOMAIN, f"{self._unique_id}-program-{program_num}")},
+            manufacturer=MANUFACTURER,
+            via_device=(DOMAIN, self._unique_id),
+        )
+
     async def _async_update_data(self) -> RainbirdDeviceState:
         """Fetch data from Rain Bird device."""
         try:
@@ -129,11 +143,39 @@ class RainbirdUpdateCoordinator(DataUpdateCoordinator[RainbirdDeviceState]):
         states = await self._controller.get_zone_states()
         rain = await self._controller.get_rain_sensor_state()
         rain_delay = await self._controller.get_rain_delay()
+
+        # Fetch combined controller state for seasonal adjust, remaining
+        # runtime and active station.
+        controller_state = None
+        try:
+            controller_state = (
+                await self._controller.get_combined_controller_state()
+            )
+        except RainbirdApiException:
+            _LOGGER.debug("Combined controller state not supported")
+
+        # Fetch water budget for each program.
+        water_budgets: dict[int, WaterBudget] = {}
+        max_programs = self._model_info.model_info.max_programs
+        if max_programs and self._model_info.model_info.supports_water_budget:
+            for program in range(max_programs):
+                try:
+                    water_budgets[program] = await self._controller.water_budget(
+                        program
+                    )
+                except RainbirdApiException:
+                    _LOGGER.debug(
+                        "Water budget not supported for program %d", program
+                    )
+                    break
+
         return RainbirdDeviceState(
             zones=available_stations.active_set,
             active_zones=states.active_set,
             rain=rain,
             rain_delay=rain_delay,
+            controller_state=controller_state,
+            water_budgets=water_budgets or None,
         )
 
 
