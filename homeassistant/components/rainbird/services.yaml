@@ -25,3 +25,17 @@ set_rain_delay:
           min: 0
           max: 14
           unit_of_measurement: "days"
+run_program:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: rainbird
+    program:
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 8
+          mode: box

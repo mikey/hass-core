@@ -58,6 +58,11 @@
       "active_station": {
         "name": "Active station"
       }
+    },
+    "button": {
+      "run": {
+        "name": "Run"
+      }
     }
   },
   "options": {
@@ -97,6 +102,20 @@
         }
       },
       "name": "Start irrigation"
+    },
+    "run_program": {
+      "description": "Runs a complete irrigation program.",
+      "fields": {
+        "config_entry_id": {
+          "description": "The configuration entry of the controller.",
+          "name": "Rain Bird controller"
+        },
+        "program": {
+          "description": "Program number to run (1=A, 2=B, 3=C, etc.).",
+          "name": "Program"
+        }
+      },
+      "name": "Run program"
     }
   }
 }

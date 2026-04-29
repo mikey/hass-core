@@ -8,5 +8,6 @@ CONF_SERIAL_NUMBER = "serial_number"
 CONF_IMPORTED_NAMES = "imported_names"
 
 ATTR_DURATION = "duration"
+ATTR_PROGRAM = "program"
 
-TIMEOUT_SECONDS = 20
+TIMEOUT_SECONDS = 30
