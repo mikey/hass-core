@@ -43,6 +43,12 @@
     "number": {
       "rain_delay": {
         "name": "Rain delay"
+      },
+      "water_budget": {
+        "name": "Seasonal adjustment"
+      },
+      "zone_duration": {
+        "name": "Zone {zone}"
       }
     },
     "sensor": {
@@ -57,6 +63,14 @@
       },
       "active_station": {
         "name": "Active station"
+      },
+      "program": {
+        "name": "Total runtime"
+      }
+    },
+    "time": {
+      "start_time": {
+        "name": "Start time"
       }
     },
     "button": {
