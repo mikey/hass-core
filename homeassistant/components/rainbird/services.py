@@ -9,13 +9,15 @@ import voluptuous as vol
 from pyrainbird.exceptions import RainbirdApiException, RainbirdDeviceBusyException
 
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
-from homeassistant.config_entries import ConfigEntryState
+from homeassistant.const import ATTR_CONFIG_ENTRY_ID
 from homeassistant.core import HomeAssistant, ServiceCall, callback
-from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv, service
+from homeassistant.helpers.selector import ConfigEntrySelector
 from homeassistant.helpers.typing import VolDictType
 
 from .const import ATTR_DURATION, ATTR_PROGRAM, DOMAIN
+from .types import RainbirdConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,20 +29,16 @@ SERVICE_SCHEMA_IRRIGATION: VolDictType = {
 }
 
 SERVICE_SCHEMA_RUN_PROGRAM: VolDictType = {
-    vol.Required("config_entry_id"): cv.string,
+    vol.Required(ATTR_CONFIG_ENTRY_ID): ConfigEntrySelector({"integration": DOMAIN}),
     vol.Required(ATTR_PROGRAM): vol.All(vol.Coerce(int), vol.Range(min=1, max=8)),
 }
 
 
 async def _async_run_program(call: ServiceCall) -> None:
     """Run a Rain Bird irrigation program."""
-    config_entry_id = call.data["config_entry_id"]
-
-    entry = call.hass.config_entries.async_get_entry(config_entry_id)
-    if entry is None or entry.state is not ConfigEntryState.LOADED:
-        raise ServiceValidationError(
-            f"Config entry {config_entry_id} not found or not loaded"
-        )
+    entry: RainbirdConfigEntry = service.async_get_config_entry(  # type: ignore[assignment]
+        call.hass, DOMAIN, call.data[ATTR_CONFIG_ENTRY_ID]
+    )
 
     # Program number is 1-based from the user, 0-based for the API.
     program = call.data[ATTR_PROGRAM] - 1
